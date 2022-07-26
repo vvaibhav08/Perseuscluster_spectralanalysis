@@ -135,16 +135,30 @@ def smooth_casa(
         overwrite=True
     )
 
+def wsrt_flux_error(S, noise=0.001, bowl=-0.00046, f=0.07):
+    error = np.sqrt((f*S)**2 + noise**2 + bowl**2)
+    return error
+def lofar_flux_error(S, noise=0.0011, f=0.10):
+    error = np.sqrt((f*S)**2 + noise**2)
+    return error
+def alpha_error(S1, S2):
+    S1_error = lofar_flux_error(S1)
+    S2_error = wsrt_flux_error(S2)
+    a_error = (1/(np.log(144/327)))*(np.sqrt((S1_error/S1)**2 + (S2_error/S2)**2))
+    return abs(a_error)
+
 def spectral_index(image_lofar_data, image_wsrt_data):
     listflux = [image_lofar_data, image_wsrt_data]
     freq = np.array([144,327])
 
     flux = np.dstack(listflux)
     log_freq = np.log10(freq)
+    #log_freq = log_freq[::-1]
     print(f"Image shape: {flux.shape}")
     x,y,z = flux.shape
 
     alpha = np.zeros((x,y))
+    alpha_e = np.zeros((x,y))
 
     for r in range(x):
         for c in range(y):	
@@ -156,10 +170,15 @@ def spectral_index(image_lofar_data, image_wsrt_data):
                     #print(fitfunc[1])
                     alphapix = fitfunc[0]
                     alpha[r,c] = alphapix
+                    
+                    # error map
+                    alpha_err = alpha_error(fluxvalues[0], fluxvalues[1])
+                    alpha_e[r,c] = alpha_err
                 except:
                     alpha[r,c] = 0
-
-    return alpha
+    print(log_fluxpix)
+    print(log_freq)
+    return alpha, alpha_e
 
 def spectral_index_calculation():
     wsrt_pb_correction()
@@ -191,12 +210,17 @@ def spectral_index_main():
     wsrt_data[wsrt_data <= 2*noise_wsrt] = np.nan
 
     # calculate the spectral index
-    spix_map = spectral_index(lofar_data, wsrt_data)
+    spix_map, spix_err_map = spectral_index(lofar_data, wsrt_data)
 
     #Save the spectral index image
     spix= './data/spix_map_2sigma.fits'
     spix_hdu = fits.PrimaryHDU (spix_map, header = wsrthdu[0].header)
     spix_hdu.writeto(spix)
+
+    #Save the spectral index image
+    spix_e= './data/spix_error_map_2sigma.fits'
+    spix_err_hdu = fits.PrimaryHDU (spix_err_map, header = wsrthdu[0].header)
+    spix_err_hdu.writeto(spix_e)
 
 if __name__ == "__main__":
     from argparse import ArgumentParser, RawTextHelpFormatter

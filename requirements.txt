@@ -9,3 +9,4 @@ numpy==1.18.1
 pre-commit==2.12.1
 pyregion==2.0
 reproject==0.7.1
+itertools
