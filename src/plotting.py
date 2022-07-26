@@ -4,7 +4,7 @@ import warnings
 warnings.filterwarnings("ignore")
 from astropy.io import fits
 from astropy.wcs import WCS
-
+import matplotlib.pyplot as ml
 import matplotlib as mpl
 mpl.rcParams['xtick.direction'] = 'in'
 mpl.rcParams['ytick.direction'] = 'in'
@@ -85,7 +85,7 @@ def read_spix_fits(spix_file:str):
     spixhdu[0].data[spixhdu[0].data==0.000] = np.nan
     return spixhdu
 
-def plot(spixhdu, lofarhdu, output_png:str="./spectralindex_map.png"):
+def plot(spixhdu, lofarhdu, spix_err_hdu, output_png:str="./spectralindex_map.png"):
     """
     plot 
     plot the given spectral index map and contours
@@ -99,32 +99,53 @@ def plot(spixhdu, lofarhdu, output_png:str="./spectralindex_map.png"):
     output_png : str, optional
         output png file path, by default "./spectralindex_map.png"
     """        
-    fig2 = aplpy.FITSFigure(spixhdu[0], figsize=(12,12))
+    fig = ml.figure(figsize=(15, 15))
+
+    fig1 = aplpy.FITSFigure(spixhdu[0], figure=fig, subplot=[0.1,0.6,0.47,0.475])
     cmap = mpl.cm.jet
     cmap.set_bad('white')
-    fig2.show_colorscale(cmap=cmap,stretch = 'linear',vmin=-3,vmid=-0.01,vmax=0.01)
-    fig2.show_contour(lofarhdu[0], levels=[-0.003,0.003,0.006,0.012,0.024],smooth=5, colors = 'black', linewidths=1)
-    # fig2.recenter(49.9506671, 41.5116961, width=2, height=2)
-    fig2.add_scalebar(0.71429, '1 Mpc', color='black')
-    fig2.scalebar.set_font(size=20, weight='semibold', \
+    fig1.show_colorscale(cmap=cmap,stretch = 'linear',vmin=-3,vmid=-0.01,vmax=0.01)
+    fig1.show_contour(lofarhdu[0], levels=[-0.003,0.003,0.006,0.012,0.024],smooth=5, colors = 'black', linewidths=1)
+    fig1.add_scalebar(0.71429, '1 Mpc', color='black')
+    fig1.scalebar.set_font(size=20, weight='semibold', \
                         stretch='normal', family='serif', \
                         style='normal', variant='normal')
-    fig2.scalebar.set_linewidth(3)
+    fig1.scalebar.set_linewidth(3)
+    fig1.tick_labels.set_font(size=20)
+    fig1.ticks.set_linewidth(1.5)
+    fig1.ticks.set_length(5)
+    fig1.axis_labels.set_font(size = 20)
+    fig1.add_colorbar()
+    fig1.colorbar.set_location('top')
+    fig1.colorbar.set_font(size=15, weight='medium', \
+                        stretch='normal', family='serif', \
+                        style='normal', variant='normal')
+    fig1.colorbar.set_axis_label_text('spectral index')
+    fig1.colorbar.set_axis_label_font(size=15, weight='bold')
+    fig1.frame.set_linewidth(2)
+
+    fig2 = aplpy.FITSFigure(spix_err_hdu[0],figure=fig, subplot=[0.575,0.6,0.47,0.475])
+    cmap = mpl.cm.jet
+    cmap.set_bad('white')
+    fig2.show_colorscale(cmap=cmap,stretch = 'linear',vmin=0.0,vmid=-0.3,vmax=0.8)
+    fig2.show_contour(lofarhdu[0], levels=[-0.003,0.003,0.006,0.012,0.024],smooth=5, colors = 'black', linewidths=1)
+    fig2.axis_labels.hide_y()
+    fig2.tick_labels.hide_y()
     fig2.tick_labels.set_font(size=20)
     fig2.ticks.set_linewidth(1.5)
     fig2.ticks.set_length(5)
     fig2.axis_labels.set_font(size = 20)
     fig2.add_colorbar()
+    fig2.colorbar.set_location('top')
     fig2.colorbar.set_font(size=15, weight='medium', \
                         stretch='normal', family='serif', \
                         style='normal', variant='normal')
-    # fig2.add_grid()
-    # fig2.grid.set_color('grey')
-    # fig2.grid.set_alpha(0.5)
-    # fig2.grid.show()
+    fig2.colorbar.set_axis_label_text('spectral index error')
+    fig2.colorbar.set_axis_label_font(size=15, weight='bold')
     fig2.frame.set_linewidth(2)
-    fig2.save(output_png)
 
+    fig.canvas.draw()
+    plt.savefig(output_png, bbox_inches='tight', dpi=300)
     return
 
 
@@ -138,6 +159,11 @@ if __name__ == "__main__":
     )
 
     parser.add_argument("--spectralfits", "-spix", 
+                        metavar="PATH",
+                        type=str, 
+                        help="path to spectral index map or spectral index error map fits file"
+                        )
+    parser.add_argument("--spectralerrorfits", "-spix_err", 
                         metavar="PATH",
                         type=str, 
                         help="path to spectral index map or spectral index error map fits file"
@@ -161,4 +187,5 @@ if __name__ == "__main__":
     # spix_file= './data/spix_map_2sigma.fits'
     lofarhdu = read_lofar_fits(args.lofarfits)
     spixhdu = read_spix_fits(args.spectralfits)
-    plot(spixhdu, lofarhdu, args.outputpath)
+    spix_err_hdu = read_spix_fits(args.spectralerrorfits)
+    plot(spixhdu, lofarhdu, spix_err_hdu args.outputpath)
