@@ -25,7 +25,7 @@ $$\Delta \alpha = \frac{1}{ln(\nu_{1}/\nu_{2})}\sqrt{(\Delta S_{1} / S_{1})^2 + 
 ### Install
 This code is for Python3.7.6+. Install the dependencies for some of the casa packages [here](https://casadocs.readthedocs.io/en/latest/notebooks/introduction.html#Prerequisite-OS-Libraries). After which the packages can be installed by a simple pip install:
 
-``pip -r install requirements.txt``
+``pip install -r requirements.txt``
 
 
 ### Run 
