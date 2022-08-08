@@ -15,10 +15,10 @@ $$\Delta S = \sqrt{(fS)^2 + (\sigma_{rms})^2 + (\sigma_{bowl})^2}$$
 where $\Delta S$ is the net uncertainty, is sum in quadrature of:
 
 1. the noise in the map;
-2. the error due to the negative bowl, which arises around the extended structures because of the missing short spacings (σbowl). This severely affects the non full resolution maps only. Its value was estimated by determining the mean value of the remaining negative bowl around the central maximum. For LOFAR this is 0. For WSRT this is -0.00046
+2. the error due to the negative bowl, which arises around the extended structures because of the missing short spacings (σbowl). This severely affects the non full resolution maps only. Its value was estimated by determining the mean value of the extracted negative bowl around the central maximum. For LOFAR this is 0. For WSRT this is -0.00046
 4. the systematic flux uncertainty. For LOFAR assumed 10%, for WSRT assumed 7%.
 
-#### the spectral index analytically, can then be defined as;
+#### the spectral index erro, can then be defined analytically as;
 
 $$\Delta \alpha = \frac{1}{ln(\nu_{1}/\nu_{2})}\sqrt{(\Delta S_{1} / S_{1})^2 + (\Delta S_{2} / S_{2})^2}$$
 

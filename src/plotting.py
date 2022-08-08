@@ -145,7 +145,7 @@ def plot(spixhdu, lofarhdu, spix_err_hdu, output_png:str="./spectralindex_map.pn
     fig2.frame.set_linewidth(2)
 
     fig.canvas.draw()
-    plt.savefig(output_png, bbox_inches='tight', dpi=300)
+    ml.savefig(output_png, bbox_inches='tight', dpi=300)
     return
 
 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
                         type=str, 
                         help="path to spectral index map or spectral index error map fits file"
                         )
-    parser.add_argument("--lofarfits", "--lofar", 
+    parser.add_argument("--lofarfits", "-lofar", 
                         metavar="PATH", 
                         type=str,  
                         help="path to lofar map fits file"
@@ -188,4 +188,4 @@ if __name__ == "__main__":
     lofarhdu = read_lofar_fits(args.lofarfits)
     spixhdu = read_spix_fits(args.spectralfits)
     spix_err_hdu = read_spix_fits(args.spectralerrorfits)
-    plot(spixhdu, lofarhdu, spix_err_hdu args.outputpath)
+    plot(spixhdu, lofarhdu, spix_err_hdu, args.outputpath)

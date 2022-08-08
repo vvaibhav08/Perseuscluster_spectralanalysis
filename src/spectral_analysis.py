@@ -53,7 +53,7 @@ def wsrt_pb_correction(wsrt_fits:str = './data/wsrt_ssp_corrected_better.fits'):
     # pb_hdu = fits.PrimaryHDU (beam_data, header = wsrthdu[0].header)
     # pb_hdu.writeto(wsrt_pb)
 
-    return
+    return wsrt_fits_pb
 
 ########## Spectral index calculation functions #######
 def read_casa(
