@@ -8,6 +8,17 @@ Steps followed
 4. smooth both images to a common resolution
 5. Derive spectral index and error maps analytically
 
+### Repository structure
+    📦Perseuscluster_spectralanalysis
+    ┣ 📂contours                                        --> WSRT image contour files to be used by short spacing correction method ( jupyter notebook)
+    ┣ 📂results                                         --> Results
+    ┣ 📂src                                             --> Source code
+    ┃ ┣ 📜WSRT_missing_shortspacing_correction.ipynb    --> Short spacing correction method for the WSRT 327 map as a notebook
+    ┃ ┣ 📜plotting.py                                   --> Plotting script to generate spectral index maps
+    ┃ ┣ 📜shortspacing_correction.py                    --> SSP correction script (NOT TESTED YET!)
+    ┃ ┗ 📜spectral_analysis.py                          --> Spectral analysis script.
+
+
 ### Spectral index error calculation
 Uncertainty in flux is defined, as follows:
 
