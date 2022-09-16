@@ -53,4 +53,4 @@ Plot with ``plotting.py`` for create maps spectral index and spectral index erro
 
  ### Results
 
- ![Maps](results/pngs/spectral_index_roo2sigma.png)
+ ![Maps](results/pngs/spix_image_3sigma.png)
